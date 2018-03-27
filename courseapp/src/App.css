@@ -29,30 +29,66 @@
 }
 /*End of React startup*/
 
-#title{
-  text-align: center;
-  background: blue;
-  color: orange;
-}
+input[type="submit"] {
+ /* float: right;*/
+  background-color: #58BBE3;
+  border: white;
+  }
 
-#information{
+#questions{
   text-align: center;
-  background: gray;
+  background: #D7D7D7;
+  border-radius: 25px;
 }
 
 label{
   display: inline;
-  color: orange;
+  color: #58BBE3;
   margin-top: 10px;
 }
 
-h1{
+#header{
+  text-align: center;
+  background: #58BBE3;
+  color: white;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-radius: 25px;
+}
+img{
+  float: left;
+  height: 120px;
+  width: 190px;
+}
+
+#classes{
+  margin-top: 10px;
+}
+
+.course{
+  margin-bottom: 5px;
+  border-radius: 25px;
+  border: 1px solid #D7D7D7;
+  background: #E3AB58;
+  color: white;
+}
+
+body{
+    background-image: url("background.jpg");
+}
+#border{
+  border-right: 1px dashed white;
+}
+#borderUp{
+  border-top: 1px dashed white;
+}
+#center{
+  text-align: center;
+}
+section{
   margin-top: 10px;
   padding-top: 10px;
 }
-
-#courses{
-  margin-top: 10px;
-  background: blue;
-  color: orange;
+#orange{
+  color: #E3AB58;
 }

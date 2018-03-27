@@ -6,33 +6,31 @@ import './App.css';
 
 class App extends Component {
 
- constructor(){
-    super();
+ constructor(props){
+    super(props);
 
-    /*binding "This" to the function loadMainPageCallBack because of javascript function inside function
-    loses the scope of what this is, so this is needed so the callback function refers back to ViewEvents*/
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.state = {htmlcode: ""}
+    this.btnclk = this.btnclk.bind(this)//binding doesn't send a form
+    this.state = {html: null} //need to set this in the beginning to use variable in different functions
   }
-
-  static defaultProps = {departments: ['N/A', "ACFM", "OFFAF", "ANBE", "ANTH", "ARBC", "ARTH",
-                        "ARST", "ARTR" , "BIOL", "BMEG" , "OFFL", "OFFD", "OFFF",
-                        "OFFAT", "OFFGH", "OFFG", "OFFCB", "CHEG", "CSCI", "CHIN",
-                        "CEEG", "CLAS" , "ENCW", "DANC", "OFFDN", "EAST", "ECON",
-                        "EDUC", "ECEG", "ENGR", "ENGL", "ENST", "ENFS", "FOUN",
-                        "FREN" , "GEOL", "GEOG", "GRMN", "GREK", "GLBM", "HEBR",
-                        "HIST", "HUMN", "IDPT", "OFFJP", "JAPN", "LATN", "LAMS"
-                        , "LEGL", "LING", "ENLS", "MGMT", "MSUS", "MIDE",
-                        "MATH", "MECH", "MILS", "MUSC", "NEUR", "OCST", "PHIL",
-                        "PHYS", "POLS", "PSCY", "RELI", "RUSS", "RESC", "SIGN",
-                        "SPAN", "SOCI", "SLIF", "THEA", "UNIV", "WMST"] ,
+// For ES6+ need to use the var defaultProps
+  static defaultProps = {departments: ['N/A', 'ACFM', 'OFFAF', 'ANBE', 'ANTH', 'ARBC', 'ARTH',
+                        'ARST', 'ARTR' , 'BIOL', 'BMEG' , 'OFFL', 'OFFD', 'OFFF',
+                        'OFFAT', 'OFFGH', 'OFFG', 'OFFCB', 'CHEG', 'CSCI', 'CHIN',
+                        'CEEG', 'CLAS' , 'ENCW', 'DANC', 'OFFDN', 'EAST', 'ECON',
+                        'EDUC', 'ECEG', 'ENGR', 'ENGL', 'ENST', 'ENFS', 'FOUN',
+                        'FREN' , 'GEOL', 'GEOG', 'GRMN', 'GREK', 'GLBM', 'HEBR',
+                        'HIST', 'HUMN', 'IDPT', 'OFFJP', 'JAPN', 'LATN', 'LAMS'
+                        , 'LEGL', 'LING', 'ENLS', 'MGMT', 'MSUS', 'MIDE',
+                        'MATH', 'MECH', 'MILS', 'MUSC', 'NEUR', 'OCST', 'PHIL',
+                        'PHYS', 'POLS', 'PSCY', 'RELI', 'RUSS', 'RESC', 'SIGN',
+                        'SPAN', 'SOCI', 'SLIF', 'THEA', 'UNIV', 'WMST'] ,
 
                         day: ['M','T','W','R','F','MW','MWF','WF','TR'] ,
 
-                        times: ['8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM',
-                        '11:00 AM', '11:30 AM','12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM',
-                        '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM', '6:00 PM',
-                        '6:30 PM', '7:00 PM', '7:30 PM'],
+                        times: ['8:00 am', '8:30 am', '9:00 am', '9:30 am', '10:00 am', '10:30 am',
+                        '11:00 am', '11:30 am','12:00 pm', '12:30 pm', '1:00 pm', '1:30 pm', '2:00 pm', '2:30 pm',
+                        '3:00 pm', '3:30 pm', '4:00 pm', '4:30 pm', '5:00 pm', '5:30 pm', '6:00 pm',
+                        '6:30 pm', '7:00 pm', '7:30 pm'],
 
                         times2: ['8:52am', '9:22am', '9:52am', '10:22am', '10:52am', '11:22am', '11:52am',
                         , '12:22pm', '12:52pm', '1:22pm', '1:52pm', '2:22pm', '2:52pm', '3:22pm', '3:52pm'
@@ -40,13 +38,14 @@ class App extends Component {
                         , '8:22pm', '8:52pm', '9:22pm', '9:52pm'],
 
 
-                        limit: [5, 10, 15, 20]
+                        limit: [5, 10, 15, 20, 25, 30, 35, 40]
 
                 }
 
-  handleSubmit(e){
-    e.preventDefault()
+  btnclk(evnt){
     //Meeting%20Time=
+    //to prevent the submit btn from submitting a form
+    evnt.preventDefault()
     var time1 = this.refs.time1.value.split(" ")[0]
     var time2 = this.refs.time2.value
     console.log(time1)
@@ -54,124 +53,135 @@ class App extends Component {
     var department = "Department=" + this.refs.department.value
     var date = this.refs.day.value
     console.log(date)
-    var limit = this.refs.limit.value
+    var limit = "limit=" + this.refs.limit.value
     var mtime = "Meeting%20Time=" + date + "%20" + time1 + "-" + time2
     console.log(mtime)
 
     if(this.refs.department.value === "N/A"){
       department= ""
     }
-    var query = department + "&" + mtime + "&" + limit
-    console.log(query)
 
-    fetch('https://www.eg.bucknell.edu/~amm042/service/q?'+ query)
-      .then( response => {
-          var json = response.json()
-          return json
-        }).then(jsonResponse => {
-          // console.log(jsonResponse)
-          // console.log(jsonResponse["message"])
-          this.renderClasses(jsonResponse["message"])
+    fetch('https://www.eg.bucknell.edu/~amm042/service/q?'+ department + "&" + mtime + "&" + limit)
+      .then(resp => {
+          return resp.json()
+        })
+      .then(results => {
+        //create an html of the query
+        var courses = []
+        for (var i = 0; i < results["message"].length;  i += 1) {
+          courses.push( "Course: "+ results["message"][i]["Course"] + " - " + results["message"][i]["Title"])
+          courses.push("CRN: "+ results["message"][i]["CRN"])
+          courses.push("Professor: " + results["message"][i]["Instructor"])
+        }
+        if (!courses.length){
+          courses.push("There are no courses offered at that day and time, please submit a different department, time, or day.")
+        }
+
+        var listCourses = courses.map((text) => <div class="course col-4">{text}</div>);
+
+        console.log(courses)
+        this.setState({html: listCourses}) //changing the global variable to be used in a nother function
         })
 
-      .catch( error => console.log("ERROR", error))
+      .catch(function(error) {
+        console.log(error);
+        });
   }
 
-  renderClasses(classes){
-    var html = []
-    for (var i = 0; i < classes.length;  i += 1) {
-      html.push("CRN: "+ classes[i]["CRN"] + ", Title: "+ classes[i]["Title"] +
-      ", Course Name: " + classes[i]["Course"] +", Meeting Time: " + classes[i]["Meeting Time"])
-  }
-
-    const listItems = html.map((text) => <li>{text}</li>);
-
-    console.log(html)
-    this.setState({htmlcode: listItems})
-  }
-
+//always need a render() function
   render() {
 
-    let Department = this.props.departments.map(category => {
-          return <option key={category} value={category}>{category}</option>
+    //looked on github to get functionality on dropdowns for these mappings and the html select code
+    //I give credit to Allan la for that
+    let Department = this.props.departments.map(function(category) {
+          return ( <option key={category} value={category}>{category}</option> )
         })
 
-    let Day = this.props.day.map(category => {
-          return <option key={category} value={category}>{category}</option>
+    let Day = this.props.day.map(function(category) {
+          return (<option key={category} value={category}>{category}</option>)
         })
-    let Time = this.props.times.map(category => {
-          return <option key={category} value={category}>{category}</option>
+    let Time = this.props.times.map(function(category) {
+          return (<option key={category} value={category}>{category}</option>)
         })
-    let Time2 = this.props.times2.map(category => {
-          return <option key={category} value={category}>{category}</option>
-        })
-
-    let limits = this.props.limit.map(category => {
-          return <option key={category} value={category}>{category}</option>
+    let Time2 = this.props.times2.map(function(category) {
+          return (<option key={category} value={category}>{category}</option>)
         })
 
-    var htmlCode = this.state.htmlcode
-    console.log("In render here is htmlcode = ", htmlCode)
+    let limits = this.props.limit.map(function(category) {
+          return (<option key={category} value={category}>{category}</option>)
+        })
+
+    // console.log("In render here is htmlcode = ", htmlCode)
     return (
     <div>
       <div className = "container">
+        <br/>
+        <div id="header">
+          <h1 >  <img src={ require('./rayBucknell.png') } />Course Information</h1>
+          <p>Having trouble finding a class that fits into your schedule? Look up courses by day and time!</p>
+          <br/>
 
-        <br></br>
-        <h1 id="title">Having trouble finding a class that fits into your schedule? Look up courses by day and time!</h1>
-        <div id= "information">
-            <form onSubmit={this.handleSubmit.bind(this)}>
-              <div>
-                  <label>What department do you want to take this course in?</label><br />
+        </div>
+        <div id= "questions">
+            <form onSubmit={this.btnclk.bind(this)} class= "row">
+              <section class= "col-3" id="border">
+                  <h5 id="orange"> STEP ONE </h5>
+                  <label>What department do you want to take this course in?</label><br/>
                     <select ref="department">
                       {Department}
                     </select>
-              </div>
+              </section>
 
-              <div>
-                  <label>What day(s) of the week do you want this course to be?</label><br />
+              <section class="col-3" id="border">
+                <h5 id="orange"> STEP TWO </h5>
+                  <label>What day(s) of the week do you want this course to be?</label><br/>
                     <select ref="day">
                       {Day}
                     </select>
-              </div>
+              </section>
 
-              <div>
-                  <label>What time do you want this course to start?</label><br />
+              <section class="col-3" id="border">
+                <h5 id="orange"> STEP THREE </h5>
+                  <label>What time do you want this course to start?</label><br/>
                     <select ref="time1">
                       {Time}
                     </select>
-              </div>
+              </section>
 
-              div>
-                  <label>What time do you want this course to end?</label><br />
+              <section class="col-3">
+                <h5 id="orange"> STEP FOUR </h5>
+                  <label>What time do you want this course to end?</label><br/>
                     <select ref="time2">
                       {Time2}
                     </select>
-              </div>
+              </section>
 
-              <div>
-                  <label>How many course choices do you want to display?</label><br />
+              <section class="col-7" id="borderUp">
+                <h5 id="orange"> STEP FIVE </h5>
+                  <label>How many course choices do you want to display?</label><br/>
                     <select ref="limit">
                       {limits}
                     </select>
-              </div>
+              </section>
 
-              <br />
-              <input type="submit" className="btn btn-primary" value="View Required Classes"/>
-              <br />
+              <section class="col-5" id="borderUp">
+              <br/>
+              <p id="center"><input type="submit" className="btn btn-primary" value="View Courses"/></p>
+              </section>
 
             </form>
-            <br />
+            <br/>
           </div>
 
-          <div id="courses">
-              <ol>{htmlCode}</ol>
+          <div id="classes" class="row">
+              {this.state.html /*need brackets around variable to go to java*/}
           </div>
         </div>
-    </div>//div to wrap everything into one element
+        <br/>
+    </div>
     );
 
 
-  }//renders bracket
-}//class bracket
-
+  }
+}
 export default App;
