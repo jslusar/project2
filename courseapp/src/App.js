@@ -98,7 +98,6 @@ class App extends Component {
   render() {
 
     //looked on github to get functionality on dropdowns for these mappings and the html select code
-    //I give credit to Allan la for that
     let Department = this.props.departments.map(function(category) {
           return ( <option key={category} value={category}>{category}</option> )
         })
