@@ -9,10 +9,62 @@ class App extends Component {
  constructor(props){
     super(props);
 
-    this.btnclk = this.btnclk.bind(this)//binding doesn't send a form
+    this.btnclk = this.btnclk.bind(this)//binding doesn't send a form, so that it updates DOM
     this.state = {html: null} //need to set this in the beginning to use variable in different functions
   }
-// For ES6+ need to use the var defaultProps
+
+  btnclk(evnt){
+    //Meeting%20Time=
+    //to prevent the submit btn from submitting a form
+    evnt.preventDefault()
+    var time1 = this.refs.time1.value.split(" ")[0]
+    var time2 = this.refs.time2.value
+    console.log(time1)
+    console.log(time2)
+    var department = "Department=" + this.refs.department.value
+    var date = this.refs.day.value
+    console.log(date)
+    var limit = "limit=" + this.refs.limit.value
+    var mtime = "Meeting%20Time=" + date + "%20" + time1 + "-" + time2
+    console.log(mtime)
+
+//search in all departments
+    if(this.refs.department.value === 'N/A'){
+      department= ''
+    }
+
+//show all classes at that time
+    if(this.refs.limit.value === 'N/A'){
+      limit=''
+    }
+
+    fetch('https://www.eg.bucknell.edu/~amm042/service/q?'+ department + "&" + mtime + "&" + limit)
+      .then(resp => {
+          return resp.json()
+        })
+      .then(results => {
+        //create an html of the query
+        var courses = []
+        for (var i = 0; i < results["message"].length;  i += 1) {
+          courses.push( <div class="course col-4">{"Course: "+ results["message"][i]["Course"] + " - " + results["message"][i]["Title"]}</div>)
+          courses.push(<div class="course col-4">{"CRN: "+ results["message"][i]["CRN"]} </div>)
+          courses.push(<div class="course col-4">{"Professor: " + results["message"][i]["Instructor"]}</div>)
+        }
+        if (!courses.length){
+          courses.push(<div class="course col-4">There are no courses offered at that day and time, please submit a different department, time, or day.</div>)
+        }
+
+
+        console.log(courses)
+        this.setState({html: courses}) //changing the global variable to be used in a nother function
+        })
+
+      .catch(function(error) {
+        console.log(error);
+        });
+  }
+
+  // For ES6+ need to use the var defaultProps
   static defaultProps = {departments: ['N/A', 'ACFM', 'OFFAF', 'ANBE', 'ANTH', 'ARBC', 'ARTH',
                         'ARST', 'ARTR' , 'BIOL', 'BMEG' , 'OFFL', 'OFFD', 'OFFF',
                         'OFFAT', 'OFFGH', 'OFFG', 'OFFCB', 'CHEG', 'CSCI', 'CHIN',
@@ -38,55 +90,9 @@ class App extends Component {
                         , '8:22pm', '8:52pm', '9:22pm', '9:52pm'],
 
 
-                        limit: [5, 10, 15, 20, 25, 30, 35, 40]
+                        limit: ['N/A', 5, 10, 15, 20, 25, 30, 35, 40]
 
                 }
-
-  btnclk(evnt){
-    //Meeting%20Time=
-    //to prevent the submit btn from submitting a form
-    evnt.preventDefault()
-    var time1 = this.refs.time1.value.split(" ")[0]
-    var time2 = this.refs.time2.value
-    console.log(time1)
-    console.log(time2)
-    var department = "Department=" + this.refs.department.value
-    var date = this.refs.day.value
-    console.log(date)
-    var limit = "limit=" + this.refs.limit.value
-    var mtime = "Meeting%20Time=" + date + "%20" + time1 + "-" + time2
-    console.log(mtime)
-
-    if(this.refs.department.value === "N/A"){
-      department= ""
-    }
-
-    fetch('https://www.eg.bucknell.edu/~amm042/service/q?'+ department + "&" + mtime + "&" + limit)
-      .then(resp => {
-          return resp.json()
-        })
-      .then(results => {
-        //create an html of the query
-        var courses = []
-        for (var i = 0; i < results["message"].length;  i += 1) {
-          courses.push( "Course: "+ results["message"][i]["Course"] + " - " + results["message"][i]["Title"])
-          courses.push("CRN: "+ results["message"][i]["CRN"])
-          courses.push("Professor: " + results["message"][i]["Instructor"])
-        }
-        if (!courses.length){
-          courses.push("There are no courses offered at that day and time, please submit a different department, time, or day.")
-        }
-
-        var listCourses = courses.map((text) => <div class="course col-4">{text}</div>);
-
-        console.log(courses)
-        this.setState({html: listCourses}) //changing the global variable to be used in a nother function
-        })
-
-      .catch(function(error) {
-        console.log(error);
-        });
-  }
 
 //always need a render() function
   render() {
@@ -111,7 +117,6 @@ class App extends Component {
           return (<option key={category} value={category}>{category}</option>)
         })
 
-    // console.log("In render here is htmlcode = ", htmlCode)
     return (
     <div>
       <div className = "container">
